@@ -1,4 +1,4 @@
-// data models (structs) for app-types
+// common data model (structs) for app-types
 
 package config
 
@@ -35,3 +35,28 @@ const (
 )
 
 // projectconfig struct - central data model for the whole application pipeline
+
+type ProjectConfig struct {
+	ProjectName string
+	ModulePath  string
+	AppType     AppType
+
+	Framework Framework
+	Language  string // supports only Go
+
+	UseTUI         bool
+	UseLogging     bool
+	UseConfig      bool
+	UseCompletions bool
+	UseTesting     bool
+
+	// tools
+
+	IDE       IDE
+	OutputDir string
+
+	// version of the language
+
+	GoVersion string // like 1.26
+
+}
