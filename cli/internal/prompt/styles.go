@@ -9,8 +9,8 @@ var (
 	colorSecondary = lipgloss.Color("#6C91C2") // - secondary
 	colorMuted     = lipgloss.Color("#6C6C6C") // - hints
 	colorSuccess   = lipgloss.Color("#4CAF50") // - completion message
-	colorWarning   = lipgloss.Color("#FFA500") // warnings
-	colorError     = lipgloss.Color("#E53935") // errors
+	colorWarning   = lipgloss.Color("#FFA500") // - warnings
+	colorError     = lipgloss.Color("#E53935") // - errors
 
 	AppTitleStyle = lipgloss.NewStyle().Bold(true).Foreground(colorPrimary).MarginBottom(1)
 
