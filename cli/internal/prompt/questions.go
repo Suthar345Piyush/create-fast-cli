@@ -141,3 +141,53 @@ func GroupIdentity(cfg *config.ProjectConfig) *huh.Group {
 	)
 
 }
+
+// question for what user is building - choosing app type
+
+func GroupAppType(cfg *config.ProjectConfig) *huh.Group {
+	return huh.NewGroup(
+
+		huh.NewSelect[config.AppType]().Title("What are you building?").Description("Select any starter template with default commands.").Options(buildAppTypeOptions()...).Value(&cfg.AppType),
+	)
+}
+
+// question for which framework user is going to use
+
+func GroupFramework(cfg *config.ProjectConfig) *huh.Group {
+	return huh.NewGroup(
+		huh.NewSelect[config.Framework]().Title("CLI Framework").Options(buildFrameworkOptions()...).Value(&cfg.Framework),
+	)
+}
+
+// some optional features, from that user can select
+
+func GroupFeatures(cfg *config.ProjectConfig) *huh.Group {
+
+	return huh.NewGroup(
+
+		huh.NewConfirm().Title("Include TUI? (BubbleTea + lipgloss)").Description("Add interactive terminal UI support").Value(&cfg.UseTUI),
+
+		huh.NewConfirm().Title("Include structured logging? (Uber zap)").Value(&cfg.UseLogging),
+
+		huh.NewConfirm().Title("Include config file support? (Viper config)").Value(&cfg.UseConfig),
+
+		huh.NewConfirm().Title("Include TUI? (BubbleTea + lipgloss)").Description("Add interactive terminal UI support").Value(&cfg.UseTUI),
+
+		huh.NewConfirm().Title("Want automatic shell completions? (bash / zsh )").Value(&cfg.UseCompletions),
+
+		huh.NewConfirm().Title("Need testing support? (Testify)").Value(&cfg.UseTesting),
+	)
+
+}
+
+// group output, for which ide user want's to open and in which directory
+
+func GroupOutput(cfg *config.ProjectConfig) *huh.Group {
+	return huh.NewGroup(
+
+		huh.NewInput().Title("Output Directory").Description("The Project folder will be created here.").Placeholder("/home/yourname/projects").Value(&cfg.OutputDir).Validate(validateOutputDir),
+
+		huh.NewSelect[config.IDE]().Title("Open project in which IDE after generation").Options(buildIDEOptions()...).Value(&cfg.IDE),
+	)
+
+}

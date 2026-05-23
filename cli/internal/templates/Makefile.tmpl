@@ -1,0 +1,59 @@
+BINARY := {{.ProjectName}}
+MODULE := {{.ModulePath}}
+GO := go 
+GOFLAGS := 
+
+
+
+
+.PHONY: all build run test lint clean tidy  
+
+all: build 
+
+## build: compile the binary 
+build:
+    $(GO) build $(GOFLAGS) -o $(BINARY) .
+
+
+## run: build and run with --help 
+
+run: build
+    ./$(BINARY) --help 
+
+
+## test: run all tests 
+
+test: 
+    $(GO) test ./... -v -race -coverprofile=coverage.out
+    $(GO) tool cover -html=coverage.out -o coverage.html
+
+
+## linting: run golangci-lint 
+
+lint:
+    golangci-lint run ./...
+
+
+
+## tidy: tidy and verify go.mod 
+
+tidy:
+    $(GO) mod tidy
+    $(GO) mod verify
+
+
+## clean: remove build artifacts 
+
+clean:
+     rm -f $(BINARY) coverage.out coverage.html 
+     rm -rf dist/
+
+
+## help: print this message  
+
+help:
+    @grep -E '^##' Makefile | sed 's/## /  /'
+
+
+
+
