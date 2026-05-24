@@ -1,0 +1,48 @@
+# {{title .ProjectName}}
+
+> A {{.AppType}} built with Go and {{.Framework}}.
+
+## Installation
+
+```bash
+go install {{.ModulePath}}@latest
+```
+
+## Usage
+
+```bash
+{{.ProjectName}} --help
+```
+
+## Development
+
+```bash
+# Clone the repository
+git clone https://{{.ModulePath}}.git
+cd {{.ProjectName}}
+
+# Install dependencies
+go mod tidy
+
+# Run
+go run . --help
+
+# Build
+go build -o {{.ProjectName}} .
+
+# Test
+go test ./...
+```
+{{if hasFeature . "UseConfig"}}
+## Configuration
+
+The tool reads configuration from `~/.{{.ProjectName}}.yaml` automatically.
+
+```yaml
+# ~/.{{.ProjectName}}.yaml
+log_level: info
+```
+{{end}}
+## License
+
+MIT
