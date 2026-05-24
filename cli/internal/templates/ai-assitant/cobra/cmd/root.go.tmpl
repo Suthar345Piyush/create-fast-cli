@@ -1,0 +1,31 @@
+package cmd 
+
+
+import (
+   "os"
+   "fmt"
+
+   "github.com/spf13/cobra"
+)
+
+
+var rootCmd = &cobra.Command{
+    Use: "{{.ProjectName}}",
+    Short: "An LLM-powered terminal assistant",
+    Long: `{{title .ProjectName}} - bring AI to your terminal workflows.`,
+}
+
+func Execute() {
+    if err := rootCmd.Execute(); err != nil {
+       fmt.Fprintln(os.Stderr, err)
+       os.Exit(1)
+    }
+}
+
+
+
+func init() {
+     rootCmd.PersistantFlags().BoolP("verbose", "v", false, "Verbose output")
+     rootCmd.PersistantFlags().StringP("model", "m", "gpt-5", "LLM model to use")
+}
+

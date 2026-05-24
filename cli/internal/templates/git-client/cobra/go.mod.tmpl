@@ -1,0 +1,25 @@
+module {{.ModulePath}}
+
+go {{.GoVersion}}
+
+require (
+   github.com/spf13/cobra v1.10.2
+
+{{- if hasFeature . "UseLogging"}}
+   go.uber.org/zap v1.28.0
+{{- end}}
+
+{{- if hasFeature . "UseConfig"}}
+   github.com/spf13/viper v1.21.0
+{{- end}}
+
+{{- if hasFeature . "UseTesting"}}
+    github.com/stretchr/testify v1.11.1
+{{- end}}
+)
+
+
+
+
+
+

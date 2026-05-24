@@ -1,0 +1,32 @@
+package cmd 
+
+
+import (
+   "fmt"
+   "os"
+
+   "github.com/spf13/cobra"
+)
+
+
+var rootCmd = &cobra.Command{
+    Use: "{{.ProjectName}}",
+    Short: "A custom Git client built with FastCLI",
+    Long: `{{title .ProjectName}} - custom git workflows and hooks for your team.`
+}
+
+
+func  Execute() {
+     if err := roomCmd.Execute(); err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        os.Exit(1)
+      }
+}
+
+
+func init() {
+   roomCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose output")
+}
+
+
+

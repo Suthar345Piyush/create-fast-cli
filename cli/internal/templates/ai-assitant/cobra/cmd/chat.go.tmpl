@@ -1,0 +1,76 @@
+package cmd  
+
+
+import (
+   "bufio"
+   "fmt"
+   "os"
+   "strings"
+
+   "github.com/spf13/cobra"
+)
+
+
+
+var chatCmd = &cobra.Command{
+    Use: "chat",
+    Short: "Start an interactive chat session",
+    Long: "Opens an interactive REPL-style chat session with the configured LLM",
+    RunE: runChat,
+}
+
+
+
+func init() {
+    rootCmd.AddCommand(chatCmd)
+    chatCmd.Flags().StringP("system", "s", "", "System prompt to use")
+}
+
+
+func runChat(cmd *cobra.Command, args []string) error {
+  
+    system, _ := cmd.Flags().GetString("system")
+
+    if system == "" {
+       system = "You are a helpful terminal assistant"
+     }
+
+     fmt.Println("Starting chat session. Type 'exit' or Ctrl-C to quit.")
+
+     fmt.Println("System:", system)
+
+     fmt.Println(strings.Repeat("-", 40))
+
+
+     scanner := bufio.NewScanner(os.Stdin)
+
+
+     for {
+       
+         fmt.Print("\nYou: ")
+
+         if !scanner.Scan() {
+             break
+          }
+
+          input := strings.TrimSpace(scanner.Text())
+
+          if input == "" {
+              continue
+          }     
+
+          if input == "exit" || input == "quit" {
+              break
+          }
+
+          // your preferred LLM client here 
+
+          fmt.Printf("\nAssistant: [LLM response to %q goes here]\n", input)
+
+     }
+
+     fmt.Println("\nGoodbye")
+
+     return nil 
+
+}
