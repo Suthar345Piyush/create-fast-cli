@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"charm.land/huh/v2"
-	"github.com/suthar345piyush/internal/config"
+	"github.com/Suthar345Piyush/create-fast-cli/cli/internal/config"
 )
 
 // build app type options for asking what user want to build, they select from this options
