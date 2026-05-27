@@ -13,7 +13,7 @@ import (
 // step message struct
 
 type StepMsg struct {
-	label string
+	Label string
 	Err   error
 }
 
@@ -110,7 +110,7 @@ func (pg ProgressModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 }
 
-func (pg ProgressModel) View() string {
+func (pg ProgressModel) View() tea.View {
 
 	var sb strings.Builder
 
@@ -144,7 +144,7 @@ func (pg ProgressModel) View() string {
 
 	sb.WriteString("\n")
 
-	return sb.String()
+	return tea.NewView(sb.String())
 
 }
 
