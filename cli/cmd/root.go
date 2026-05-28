@@ -33,7 +33,7 @@ for Go - features included (Cobra, Viper, Zap, Bubbletea and more).
 
 Run without arguments to launch the interactive wizard:
 
-npx-create-fast-cli   (or)   create-fast-cli create`,
+npx create-fast-cli   (or)   create-fast-cli create`,
 
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 
