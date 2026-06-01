@@ -555,3 +555,114 @@ func TestWrite_FilePermissions(t *testing.T) {
 }
 
 // some last tests - related to the directory present or not (ensureDirectory) and output directory exists or not
+
+//test function to check new directory created everytime
+
+func TestEnsureDir_CreatesDirectory(t *testing.T) {
+	base := t.TempDir()
+	newDir := filepath.Join(base, "new", "nested", "dir")
+
+	err := scaffold.EnsureDict(newDir)
+	require.NoError(t, err)
+
+	info, err := os.Stat(newDir)
+
+	require.NoError(t, err, "directory should exist after EnsureDir")
+	require.True(t, info.IsDir(), "%q should be a directory", newDir)
+
+}
+
+// test function to check for already existing directory, should not return error in that case
+
+func TestEnsureDir_IdempotentOnExisting(t *testing.T) {
+	existing := t.TempDir()
+	err := scaffold.EnsureDict(existing)
+	require.NoError(t, err, "EnsureDir on an existing directory should be a no-op")
+}
+
+// test function for checking output directory exists or not
+
+func TestOutputDirExists_ReturnsFalseForMissing(t *testing.T) {
+
+	exists, err := scaffold.OutputDirExists("/tmp/this-path-should-never-exist-fastcli-test")
+	require.NoError(t, err)
+
+	assert.False(t, exists, "non-existent directory should report as not existing")
+
+}
+
+// test function for any empty directory will not be allowed
+
+func TestOutputDirExists_ReturnsFalseForEmpty(t *testing.T) {
+	dir := t.TempDir()
+
+	exists, err := scaffold.OutputDirExists(dir)
+
+	require.NoError(t, err)
+	assert.False(t, exists, "empty directory should not count as existsing.")
+
+}
+
+// directory with atleast one entry will be considered as existing
+
+func TestOutputDirExists_ReturnsFalseForNonEmpty(t *testing.T) {
+	dir := t.TempDir()
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "something.txt"), []byte("x"), 0o644))
+
+	exists, err := scaffold.OutputDirExists(dir)
+
+	require.NoError(t, err)
+
+	assert.True(t, exists, "non-empty directory should report as existing")
+
+}
+
+// some test related to IDE
+
+// test function , when no ide is opened by user
+
+func TestOpenIDE_NoneIsNoOp(t *testing.T) {
+	opened, err := scaffold.OpenIDE("/some/dir", config.IDENone)
+	require.NoError(t, err, "IDENone should never produce an error")
+	assert.False(t, opened, "IDENone should report opened=false")
+}
+
+// testing function to return unknown return ide error
+
+func TestOpenIDE_ReturnsUnknownIDEError(t *testing.T) {
+	_, err := scaffold.OpenIDE("/some/dir", config.IDE("sublimetext"))
+	assert.Error(t, err, "unknown IDE constant should produce an error")
+}
+
+// test function , if ide binary is missing, and return false instead of error, cause user can open ide manually
+
+func TestOpenIDE_MissingIDEBinaryFallbackMessage(t *testing.T) {
+	opened, err := scaffold.OpenIDE(t.TempDir(), config.IDEVscode)
+
+	require.NoError(t, err, "missing ide binary should be non-fatal")
+
+	_ = opened
+}
+
+// test function for slice containing, all the ide's installed on user's machine
+
+func TestOpenIDE_AllInstalledIDESlice(t *testing.T) {
+
+	// all ides
+
+	ides := scaffold.DetectIDE()
+
+	assert.NotNil(t, ides, "DetectIDE function will always returns not-nil slice")
+
+	// map contains ide with bool value present or not
+
+	ideMap := map[config.IDE]bool{
+		config.IDEVscode: true,
+		config.IDECursor: true,
+	}
+
+	for _, ide := range ides {
+		assert.True(t, ideMap[ide], "detected ide %q is not a known constant", ide)
+	}
+
+}

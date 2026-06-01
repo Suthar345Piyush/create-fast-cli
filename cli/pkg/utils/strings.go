@@ -95,6 +95,6 @@ func RemoveExt(filename string) string {
 
 // if string is empty or contains only whitespaces
 
-func isEmpty(st string) bool {
+func IsEmpty(st string) bool {
 	return strings.TrimSpace(st) == ""
 }
