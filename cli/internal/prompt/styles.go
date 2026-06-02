@@ -2,7 +2,7 @@
 
 package prompt
 
-import "github.com/charmbracelet/lipgloss"
+import "charm.land/lipgloss/v2"
 
 var (
 	colorPrimary   = lipgloss.Color("#E07B54") // - main
