@@ -35,7 +35,7 @@ func SubFS(appType config.AppType, framework config.Framework) (common fs.FS, ty
 	common, err = fs.Sub(FS, commonRoot)
 
 	if err != nil {
-		return nil, nil, fmt.Errorf("missing common templates at %q: %w", commonRoot)
+		return nil, nil, fmt.Errorf("missing common templates at %q: %w", commonRoot, err)
 	}
 
 	typed, err = fs.Sub(FS, typedRoot)
