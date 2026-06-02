@@ -1,0 +1,78 @@
+# this is standalone linting step, that will run in our CI pipeline 
+
+# It acts as a meta-linter, running multiple code quality tools (like go vet, staticcheck, and gosec) simultaneously to catch bugs, bad styling, and security flaws
+
+# Usage: It is typically configured in a .golangci.yml file and runs in your CI pipeline before GoReleaser triggers
+
+
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - gosimple
+    - unused
+    - gofmt
+    - goimports
+    - misspell
+    - gocritic
+    - revive
+    - bodyclose
+    - noctx
+    - prealloc
+    - godot
+
+
+linters-settings:
+  govet:
+    enable-all: true
+    disable:
+       - fieldalignment 
+
+  revive:
+    rules:
+      - name: exported 
+        severity: warning 
+      - name: var-naming
+        severity: warning
+
+
+  gocritic:
+    enable-tags:
+      - diagnostic
+      - style 
+    disabled-checks:
+      - paramTypeCombine
+
+
+  misspell:
+    locale: US 
+
+
+issues:
+  exclude-rules:
+
+   - path: "_test\\.go$"
+     linters: 
+       - errcheck
+       - gocritic
+
+   - path: "internal/templates/"
+     linters:
+       - all
+
+
+
+
+
+
+  max-issues-per-linter: 50
+  max-same-issues: 10
+ 
+
+
+
+  
