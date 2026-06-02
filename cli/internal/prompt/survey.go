@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"charm.land/huh/v2"
+	"charm.land/lipgloss/v2"
 	"github.com/Suthar345Piyush/create-fast-cli/cli/internal/config"
 )
 
@@ -18,6 +19,15 @@ func Run() (*config.ProjectConfig, error) {
 	cfg.IDE = config.PreferredIDE()
 	cfg.Framework = config.DefaultFramework()
 	cfg.OutputDir = config.DefaultOutputDir()
+
+	customTheme := huh.ThemeFunc(func(isDark bool) *huh.Styles {
+
+		theme := huh.ThemeCharm(isDark)
+
+		theme.Focused.Title = theme.Focused.Title.Foreground(lipgloss.Color("#FF00FF"))
+
+		return theme
+	})
 
 	// create-fast-cli banner
 
@@ -29,7 +39,7 @@ func Run() (*config.ProjectConfig, error) {
 		GroupFramework(&cfg),
 		GroupFeatures(&cfg),
 		GroupOutput(&cfg),
-	).WithTheme(huh.ThemeCharm(true))
+	).WithTheme(customTheme)
 
 	if err := form.Run(); err != nil {
 		if err == huh.ErrUserAborted {
@@ -66,7 +76,7 @@ func Run() (*config.ProjectConfig, error) {
 		huh.NewGroup(
 			huh.NewConfirm().Title("Generate Project?").Description("Files will be written to: " + cfg.OutputDir).Value(&confirmed),
 		),
-	).WithTheme(huh.ThemeCharm(true))
+	).WithTheme(customTheme)
 
 	if err := confirmForm.Run(); err != nil {
 		return nil, err
