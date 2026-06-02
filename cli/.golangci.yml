@@ -9,6 +9,7 @@ version: "2"
 
 linters:
   default: none
+
   enable:
     - errcheck
     - govet
@@ -25,54 +26,42 @@ linters:
     - prealloc
     - godot
 
+  settings:
+    govet:
+      enable-all: true
+      disable:
+      - fieldalignment
 
-linters-settings:
-  govet:
-    enable-all: true
-    disable:
-       - fieldalignment 
+    revive:
+      rules:
+        - name: exported
+          severity: warning
 
-  revive:
-    rules:
-      - name: exported 
-        severity: warning 
-      - name: var-naming
-        severity: warning
+        - name: var-naming
+          severity: warning
 
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - style
 
-  gocritic:
-    enable-tags:
-      - diagnostic
-      - style 
-    disabled-checks:
-      - paramTypeCombine
+      disabled-checks:
+        - paramTypeCombine
 
+    misspell:
+      locale: US
 
-  misspell:
-    locale: US 
+  exclusions:
+      rules:
+      - path: "_test\\.go$"
+        linters:
+          - errcheck
+          - gocritic
 
-
-issues:
-  exclude-rules:
-
-   - path: "_test\\.go$"
-     linters: 
-       - errcheck
-       - gocritic
-
-   - path: "internal/templates/"
-     linters:
-       - all
+      - path: "internal/templates/"
+        linters:
+          - all
 
 
 
-
-
-
-  max-issues-per-linter: 50
-  max-same-issues: 10
- 
-
-
-
-  
+          
