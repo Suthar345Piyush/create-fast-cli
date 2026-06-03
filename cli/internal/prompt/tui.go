@@ -127,7 +127,7 @@ func (pg ProgressModel) View() tea.View {
 			sb.WriteString(fmt.Sprintf("  %s %s\n", frame, ProgressStyle.Render(step)))
 
 		default:
-			sb.WriteString(MutedStyle.Render(fmt.Sprintf(" . %s\n", step)))
+			sb.WriteString(MutedStyle.Render(fmt.Sprintf(" · %s\n", step)))
 		}
 
 	}

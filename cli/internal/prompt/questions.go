@@ -7,118 +7,52 @@ import (
 	"github.com/Suthar345Piyush/create-fast-cli/cli/internal/config"
 )
 
-// build app type options for asking what user want to build, they select from this options
-
-func buildAppTypeOptions() []huh.Option[config.AppType] {
-
-	return []huh.Option[config.AppType]{
-
-		huh.NewOption("Dev tool - build system, linter, code gen", config.AppTypeDevTool),
-
-		huh.NewOption("Git client - custom git workflows & hooks", config.AppTypeGitClient),
-
-		huh.NewOption("File explorer - navigate & manipulate the file system", config.AppTypeFileExplorer),
-
-		huh.NewOption("Kubernetes tool -  kubectl plugin or cluster management tool", config.AppTypeK8sTool),
-
-		huh.NewOption("AI assistant - LLM-powered terminal assistant", config.AppTypeAiAssistant),
-
-		huh.NewOption("System moniter - CPU, memory, Disk, storage", config.AppTypeSystemMoniter),
-
-		huh.NewOption("Package Manager - install / update / remove package", config.AppTypePackageManager),
-	}
-
-}
-
-// build framework options - choose between two frameworks
-
-func buildFrameworkOptions() []huh.Option[config.Framework] {
-	return []huh.Option[config.Framework]{
-		huh.NewOption("Cobra - (most popular Go CLI framework)", config.FrameworkCobra),
-
-		huh.NewOption("urfave/cli - good cobra alternative CLI framework", config.FrameworkUrfaveCli),
-	}
-}
-
-//build IDE options - choose between ide options
-
-func buildIDEOptions() []huh.Option[config.IDE] {
-	return []huh.Option[config.IDE]{
-		huh.NewOption("VS Code", config.IDEVscode),
-		huh.NewOption("Cursor", config.IDECursor),
-		huh.NewOption("Don't open I'll do it myself", config.IDENone),
-	}
-}
-
-// some validations like - project name validation
-
-func projectNameValidation(s string) error {
-
-	s = strings.TrimSpace(s)
-
-	if len(s) == 0 {
-		return &ValidationError{"project name cannot be empty"}
-	}
-
-	if len(s) < 2 {
-		return &ValidationError{"project name must be atleast of 2 characters"}
-	}
-
-	if len(s) > 64 {
-		return &ValidationError{"project name must be 64 characters or fewer"}
-	}
-
-	for _, c := range s {
-		if !isNameChar(c) {
-			return &ValidationError{"only lowercase letters, numbers and hyphens are allowed"}
-		}
-	}
-
-	if s[0] == '-' || s[len(s)-1] == '-' {
-
-		return &ValidationError{"project name cannot start or end with hyphen"}
-
-	}
-
-	return nil
-
-}
-
+// ValidationError is exported so test packages can reference it.
 type ValidationError struct {
 	Message string
 }
 
-func (e *ValidationError) Error() string {
-	return e.Message
+func (e *ValidationError) Error() string { return e.Message }
+
+func validateProjectName(s string) error {
+	s = strings.TrimSpace(s)
+	if len(s) == 0 {
+		return &ValidationError{"project name cannot be empty"}
+	}
+	if len(s) < 2 {
+		return &ValidationError{"project name must be at least 2 characters"}
+	}
+	if len(s) > 64 {
+		return &ValidationError{"project name must be 64 characters or fewer"}
+	}
+	for _, c := range s {
+		if !isNameChar(c) {
+			return &ValidationError{"only lowercase letters, numbers, and hyphens are allowed"}
+		}
+	}
+	if s[0] == '-' || s[len(s)-1] == '-' {
+		return &ValidationError{"project name cannot start or end with a hyphen"}
+	}
+	return nil
 }
 
 func isNameChar(c rune) bool {
 	return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' || c == '_'
 }
 
-// function for validating the module path
-
 func validateModulePath(s string) error {
-
 	s = strings.TrimSpace(s)
-
 	if len(s) == 0 {
-		return &ValidationError{"module path name cannot be empty"}
+		return &ValidationError{"module path cannot be empty"}
 	}
-
 	if !strings.Contains(s, "/") {
 		return &ValidationError{"module path should look like github.com/you/project"}
 	}
-
 	if strings.HasPrefix(s, "/") || strings.HasSuffix(s, "/") {
-		return &ValidationError{"module path should not start or end with /	"}
+		return &ValidationError{"module path should not start or end with /"}
 	}
-
 	return nil
-
 }
-
-//function to validate the output directory
 
 func validateOutputDir(s string) error {
 	if strings.TrimSpace(s) == "" {
@@ -127,67 +61,76 @@ func validateOutputDir(s string) error {
 	return nil
 }
 
-// huh form in the form of *huh.Group
-
-// basically asking user to select or to fill the form
-
 func GroupIdentity(cfg *config.ProjectConfig) *huh.Group {
-
 	return huh.NewGroup(
-
-		huh.NewInput().Title("Project name").Description("Lowercase letters, numbers, hyphens only").Placeholder("my-cli-app").Value(&cfg.ProjectName).Validate(projectNameValidation),
-
-		huh.NewInput().Title("Go module path").Description("Used in go.mod").Placeholder("github.com/you/my-cli-app").Value(&cfg.ModulePath).Validate(validateModulePath),
+		huh.NewInput().
+			Title("Project name").
+			Description("Lowercase letters, numbers, hyphens only (e.g. my-dev-tool)").
+			Placeholder("my-cli-app").
+			Value(&cfg.ProjectName).
+			Validate(validateProjectName),
+		huh.NewInput().
+			Title("Go module path").
+			Description("Used in go.mod (e.g. github.com/you/my-cli-app)").
+			Placeholder("github.com/you/my-cli-app").
+			Value(&cfg.ModulePath).
+			Validate(validateModulePath),
 	)
-
 }
-
-// question for what user is building - choosing app type
 
 func GroupAppType(cfg *config.ProjectConfig) *huh.Group {
 	return huh.NewGroup(
-
-		huh.NewSelect[config.AppType]().Title("What are you building?").Description("Select any starter template with default commands.").Options(buildAppTypeOptions()...).Value(&cfg.AppType),
+		huh.NewSelect[config.AppType]().
+			Title("What are you building?").
+			Options(
+				huh.NewOption("Dev tool         — build system, linter, code gen", config.AppTypeDevTool),
+				huh.NewOption("Git client        — custom git workflows & hooks", config.AppTypeGitClient),
+				huh.NewOption("File explorer    — navigate & manipulate the filesystem", config.AppTypeFileExplorer),
+				huh.NewOption("Kubernetes tool  — kubectl plugin or cluster manager", config.AppTypeK8sTool),
+				huh.NewOption("AI assistant     — LLM-powered terminal assistant", config.AppTypeAiAssistant),
+				huh.NewOption("System monitor   — CPU, memory, disk, process viewer", config.AppTypeSystemMonitor),
+				huh.NewOption("Package manager  — install / update / remove packages", config.AppTypePackageManager),
+			).
+			Value(&cfg.AppType),
 	)
 }
-
-// question for which framework user is going to use
 
 func GroupFramework(cfg *config.ProjectConfig) *huh.Group {
 	return huh.NewGroup(
-		huh.NewSelect[config.Framework]().Title("CLI Framework").Options(buildFrameworkOptions()...).Value(&cfg.Framework),
+		huh.NewSelect[config.Framework]().
+			Title("CLI framework").
+			Options(
+				huh.NewOption("Cobra     (recommended — most popular Go CLI framework)", config.FrameworkCobra),
+				huh.NewOption("urfave/cli (lightweight alternative)", config.FrameworkUrfaveCli),
+			).
+			Value(&cfg.Framework),
 	)
 }
-
-// some optional features, from that user can select
 
 func GroupFeatures(cfg *config.ProjectConfig) *huh.Group {
-
 	return huh.NewGroup(
-
-		huh.NewConfirm().Title("Include TUI? (BubbleTea + lipgloss)").Description("Add interactive terminal UI support").Value(&cfg.UseTUI),
-
-		huh.NewConfirm().Title("Include structured logging? (Uber zap)").Value(&cfg.UseLogging),
-
-		huh.NewConfirm().Title("Include config file support? (Viper config)").Value(&cfg.UseConfig),
-
-		huh.NewConfirm().Title("Include TUI? (BubbleTea + lipgloss)").Description("Add interactive terminal UI support").Value(&cfg.UseTUI),
-
-		huh.NewConfirm().Title("Want automatic shell completions? (bash / zsh )").Value(&cfg.UseCompletions),
-
-		huh.NewConfirm().Title("Need testing support? (Testify)").Value(&cfg.UseTesting),
+		huh.NewConfirm().Title("Include TUI? (Bubbletea + Lipgloss)").Value(&cfg.UseTUI),
+		huh.NewConfirm().Title("Include structured logging? (Uber Zap)").Value(&cfg.UseLogging),
+		huh.NewConfirm().Title("Include config file support? (Viper)").Value(&cfg.UseConfig),
+		huh.NewConfirm().Title("Include shell completions?").Value(&cfg.UseCompletions),
+		huh.NewConfirm().Title("Include testing setup? (Testify)").Value(&cfg.UseTesting),
 	)
-
 }
-
-// group output, for which ide user want's to open and in which directory
 
 func GroupOutput(cfg *config.ProjectConfig) *huh.Group {
 	return huh.NewGroup(
-
-		huh.NewInput().Title("Output Directory").Description("The Project folder will be created here.").Placeholder("/home/yourname/projects").Value(&cfg.OutputDir).Validate(validateOutputDir),
-
-		huh.NewSelect[config.IDE]().Title("Open project in which IDE after generation").Options(buildIDEOptions()...).Value(&cfg.IDE),
+		huh.NewInput().
+			Title("Output directory").
+			Placeholder("/home/you/projects").
+			Value(&cfg.OutputDir).
+			Validate(validateOutputDir),
+		huh.NewSelect[config.IDE]().
+			Title("Open project in which IDE after generation?").
+			Options(
+				huh.NewOption("VS Code", config.IDEVscode),
+				huh.NewOption("Cursor", config.IDECursor),
+				huh.NewOption("Don't open — I'll do it myself", config.IDENone),
+			).
+			Value(&cfg.IDE),
 	)
-
 }

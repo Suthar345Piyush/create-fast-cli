@@ -11,7 +11,7 @@ const (
 	AppTypeFileExplorer   AppType = "file-explorer"
 	AppTypeK8sTool        AppType = "k8s-tool"
 	AppTypeAiAssistant    AppType = "ai-assitant"
-	AppTypeSystemMoniter  AppType = "system-moniter"
+	AppTypeSystemMonitor  AppType = "system-moniter"
 	AppTypePackageManager AppType = "package-manager"
 )
 
@@ -21,7 +21,7 @@ type Framework string
 
 const (
 	FrameworkCobra     Framework = "cobra"
-	FrameworkUrfaveCli Framework = "urfave/cli"
+	FrameworkUrfaveCli Framework = "urfave"
 )
 
 // ide options  (vscodem, cursor)

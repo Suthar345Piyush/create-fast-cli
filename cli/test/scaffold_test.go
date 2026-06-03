@@ -351,7 +351,7 @@ func TestRender_AllAppTypePresent(t *testing.T) {
 		config.AppTypeFileExplorer,
 		config.AppTypeK8sTool,
 		config.AppTypePackageManager,
-		config.AppTypeSystemMoniter,
+		config.AppTypeSystemMonitor,
 	}
 
 	// iterate on the app types

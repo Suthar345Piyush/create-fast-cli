@@ -30,7 +30,7 @@ func AppTypeLabel(t AppType) string {
 		AppTypeFileExplorer:   "File Explorer",
 		AppTypeK8sTool:        "K8s Tool",
 		AppTypePackageManager: "Package Manager",
-		AppTypeSystemMoniter:  "System Moniter",
+		AppTypeSystemMonitor:  "System Moniter",
 	}
 
 	if l, ok := labels[t]; ok {

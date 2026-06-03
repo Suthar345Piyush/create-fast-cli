@@ -22,25 +22,24 @@ func AddTo(root *cobra.Command) {
 	completionCommand := &cobra.Command{
 		Use:   "completion [bash|zsh|fish]",
 		Short: "Generate shell completion scripts",
-		Long: `To load completions:
-				
-				
-		Bash:
-		  source <(create-fast-cli completion bash)
-			#Persist:
-			create-fast-cli completion bash > /etc/bash_completion.d/create-fast-cli
+		// Long: `To load completions:
 
-		Zsh:
-      source <(create-fast-cli completion zsh)
-			#Persist
-			create-fast-cli completion zsh > "${fpath[1]}/_create-fast-cli"
+		// Bash:
+		//   source <(create-fast-cli completion bash)
+		// 	#Persist:
+		// 	create-fast-cli completion bash > /etc/bash_completion.d/create-fast-cli
 
-		Fish:
-		  create-fast-cli completion fish | source
-			#Persist
-			create-fast-cli completion fish > ~/.config/fish/completions/create-fast-cli.fish
+		// Zsh:
+		//   source <(create-fast-cli completion zsh)
+		// 	#Persist
+		// 	create-fast-cli completion zsh > "${fpath[1]}/_create-fast-cli"
 
-      `,
+		// Fish:
+		//   create-fast-cli completion fish | source
+		// 	#Persist
+		// 	create-fast-cli completion fish > ~/.config/fish/completions/create-fast-cli.fish
+
+		//   `,
 
 		ValidArgs:             []string{"bash", "zsh", "fish"},
 		Args:                  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),

@@ -37,15 +37,10 @@ func OpenIDE(projectDir string, ide config.IDE) (opened bool, err error) {
 
 	cmd := exec.Command(binPath, projectDir)
 
-	if runtime.GOOS == "windows" {
-		if err := cmd.Start(); err != nil {
-			return false, fmt.Errorf("open %s: %w", config.IDELabel(ide), err)
-		}
-	} else {
+	_ = runtime.GOOS
 
-		if err := cmd.Start(); err != nil {
-			return false, fmt.Errorf("open %s: %w", config.IDELabel(ide), err)
-		}
+	if err := cmd.Start(); err != nil {
+		return false, fmt.Errorf("open %s: %w", config.IDELabel(ide), err)
 	}
 
 	return true, nil

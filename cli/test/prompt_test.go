@@ -79,7 +79,7 @@ func TestAppTypeLabel_KnownTypes(t *testing.T) {
 		config.AppTypeAiAssistant:    "AI Assistant",
 		config.AppTypeK8sTool:        "Kubernetes tool",
 		config.AppTypePackageManager: "Package Manager",
-		config.AppTypeSystemMoniter:  "System Moniter",
+		config.AppTypeSystemMonitor:  "System Moniter",
 	}
 
 	for appType, expectedLabel := range cases {

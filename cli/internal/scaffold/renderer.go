@@ -45,7 +45,7 @@ func Render(cfg *config.ProjectConfig) ([]RenderedFile, error) {
 
 	// iterate on the common and typed file system
 
-	for _, sub := range []fs.FS{commonFS, typedFS} {
+	for _, sub := range []fs.FS{typedFS, commonFS} {
 
 		rendered, err := renderFS(sub, cfg)
 		if err != nil {
@@ -53,13 +53,15 @@ func Render(cfg *config.ProjectConfig) ([]RenderedFile, error) {
 		}
 
 		for _, rf := range rendered {
+			if seen[rf.RelPath] {
+				continue
+			}
+
 			seen[rf.RelPath] = true
 			files = append(files, rf)
 		}
 
 	}
-
-	_ = seen
 
 	return files, nil
 
@@ -71,17 +73,17 @@ func renderFS(fsys fs.FS, cfg *config.ProjectConfig) ([]RenderedFile, error) {
 
 	var results []RenderedFile
 
-	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, walkErr error) error {
 
-		if err != nil {
-			return err
+		if walkErr != nil {
+			if path == "." {
+				return fs.SkipAll
+			}
+
+			return walkErr
 		}
 
-		if d.IsDir() {
-			return nil
-		}
-
-		if !strings.HasSuffix(path, ".tmpl") {
+		if d.IsDir() || !strings.HasSuffix(path, ".tmpl") {
 			return nil
 		}
 
@@ -94,10 +96,8 @@ func renderFS(fsys fs.FS, cfg *config.ProjectConfig) ([]RenderedFile, error) {
 		tmpl, err := template.New(path).Funcs(templateFuncs()).Parse(string(raw))
 
 		if err != nil {
-			return fmt.Errorf("execute template %q: %w", path, err)
+			return fmt.Errorf("parse template %q: %w", path, err)
 		}
-
-		// executing those, who are in buffer state
 
 		var buf bytes.Buffer
 
@@ -105,30 +105,15 @@ func renderFS(fsys fs.FS, cfg *config.ProjectConfig) ([]RenderedFile, error) {
 			return fmt.Errorf("execute template %q: %w", path, err)
 		}
 
-		// removing .tmpl suffix
+		outPath := filepath.FromSlash(strings.TrimSuffix(path, ".tmpl"))
 
-		outPath := strings.TrimSuffix(path, ".tmpl")
+		results = append(results, RenderedFile{RelPath: outPath, Content: buf.Bytes()})
 
-		// removing all "/" from the output path
-
-		outPath = filepath.FromSlash(outPath)
-
-		//going to return the result
-
-		results = append(results, RenderedFile{
-			RelPath: outPath,
-			Content: buf.Bytes(),
-		})
 		return nil
+
 	})
 
-	if err != nil {
-		return nil, err
-	}
-
-	// at last return the results and nil
-
-	return results, nil
+	return results, err
 
 }
 
