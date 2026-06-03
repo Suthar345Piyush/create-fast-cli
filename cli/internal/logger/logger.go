@@ -100,35 +100,10 @@ func Fatal(args ...any) {
 	must().Fatal(args...)
 }
 
-// Fatalf logs a formatted message then calls os.Exit(1).
-
-func Fatalf(format string, args ...any) {
-	must().Fatalf(format, args...)
-}
-
 // Sync flushes any buffered log entries. Call before os.Exit.
 
 func Sync() {
 	_ = must().Sync()
-}
-
-// Err is a convenience helper that wraps an error in a zap.Field.
-
-func Err(err error) zap.Field {
-	return zap.Error(err)
-}
-
-// Str is a convenience helper for a string field.
-
-func Str(key, val string) zap.Field {
-	return zap.String(key, val)
-}
-
-// With returns a new logger with the given fields attached to every message.
-// Useful for attaching "project" or "step" context.
-
-func With(args ...any) *zap.SugaredLogger {
-	return must().With(args...)
 }
 
 // Printf satisfies the printf-style interface expected by some third-party libs.

@@ -12,11 +12,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	cfgFileName = ".fastcli"
-	cfgFileType = "yaml"
-)
-
 // setting up viper configs for read and write ~/.fastcli.yaml
 
 func InitViper() error {
@@ -29,8 +24,8 @@ func InitViper() error {
 		return fmt.Errorf("could not determine the home directory: %w", err)
 	}
 
-	viper.SetConfigName(cfgFileName)
-	viper.SetConfigType(cfgFileType)
+	viper.SetConfigName(".fastcli")
+	viper.SetConfigType("yaml")
 	viper.AddConfigPath(home)
 	viper.SetEnvPrefix("FASTCLI")
 	viper.AutomaticEnv()
@@ -64,9 +59,7 @@ func SavePreferences(cfg *ProjectConfig) error {
 		return err
 	}
 
-	cfgPath := filepath.Join(home, cfgFileName+"."+cfgFileType)
-
-	return viper.WriteConfigAs(cfgPath)
+	return viper.WriteConfigAs(filepath.Join(home, ".fastcli.yaml"))
 
 }
 

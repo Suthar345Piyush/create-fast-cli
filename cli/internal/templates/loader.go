@@ -28,21 +28,26 @@ import (
 // we have some common files and some are typed
 
 func SubFS(appType config.AppType, framework config.Framework) (common fs.FS, typed fs.FS, err error) {
-
-	commonRoot := "file/common"
+	commonRoot := "files/common"
 	typedRoot := fmt.Sprintf("files/%s/%s", appType, framework)
 
 	common, err = fs.Sub(FS, commonRoot)
-
 	if err != nil {
 		return nil, nil, fmt.Errorf("missing common templates at %q: %w", commonRoot, err)
 	}
 
 	typed, err = fs.Sub(FS, typedRoot)
-
 	if err != nil {
-		return nil, nil, fmt.Errorf("no template found for apptype=%q and framework=%q (looked at %q): %w", appType, framework, typedRoot, err)
+		typed = emptyFS{}
+		err = nil
 	}
 
-	return common, typed, err
+	return common, typed, nil
+
+}
+
+type emptyFS struct{}
+
+func (emptyFS) Open(name string) (fs.File, error) {
+	return nil, &fs.PathError{Op: "open", Path: name, Err: fs.ErrNotExist}
 }

@@ -23,33 +23,16 @@ import (
 func Write(rootDir string, files []RenderedFile) error {
 
 	for _, f := range files {
-		if err := writeFile(rootDir, f); err != nil {
-			return err
+		dest := filepath.Join(rootDir, f.RelPath)
+
+		if err := os.MkdirAll(filepath.Dir(dest), 0o755); err != nil {
+			return fmt.Errorf("create directory for %q: %w", dest, err)
 		}
-	}
-	return nil
 
-}
+		if err := os.WriteFile(dest, f.Content, 0o644); err != nil {
+			return fmt.Errorf("write file %q: %w", dest, err)
+		}
 
-// function for write to single rendered file on disk
-
-func writeFile(rootDir string, rf RenderedFile) error {
-
-	dest := filepath.Join(rootDir, rf.RelPath)
-
-	// parent directory should exist
-	// directory permission -> 0755
-	// here 'o' for octal representation
-
-	if err := os.MkdirAll(filepath.Dir(dest), 0o755); err != nil {
-		return fmt.Errorf("Create directory for %q: %w", dest, err)
-	}
-
-	// writing to the file
-	// permission - 0644
-
-	if err := os.WriteFile(dest, rf.Content, 0o644); err != nil {
-		return fmt.Errorf("Write file %q: %w", dest, err)
 	}
 
 	return nil
