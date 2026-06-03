@@ -119,7 +119,7 @@ func (pg ProgressModel) View() tea.View {
 	for i, step := range pg.steps {
 		switch {
 		case pg.done[i]:
-			sb.WriteString(StepDoneStyle.Render(" ✅") + step + "\n")
+			sb.WriteString(StepDoneStyle.Render(" ✅ ") + step + "\n")
 
 		case i == pg.current && !pg.finished:
 			frame := SpinnerStyle.Render(spinnerFrame[pg.spinnerIdx])
