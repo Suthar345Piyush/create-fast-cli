@@ -22,12 +22,22 @@ func Generate(cfg *config.ProjectConfig) error {
 	p := tea.NewProgram(model)
 	errCh := make(chan error, 1)
 
-	go func() { errCh <- runSteps(p, cfg) }()
+	go func() {
+		errCh <- runSteps(p, cfg)
+	}()
 
 	if _, err := p.Run(); err != nil {
 		return fmt.Errorf("TUI error: %w", err)
 	}
-	return <-errCh
+
+	if err := <-errCh; err != nil {
+		return err
+	}
+
+	printSuccess(cfg)
+
+	return nil
+
 }
 
 func runSteps(p *tea.Program, cfg *config.ProjectConfig) error {
@@ -60,6 +70,7 @@ func runSteps(p *tea.Program, cfg *config.ProjectConfig) error {
 		p.Send(prompt.StepMsg{Err: err})
 		return err
 	}
+
 	if err := Write(cfg.OutputDir, rendered); err != nil {
 		_ = os.RemoveAll(cfg.OutputDir)
 		p.Send(prompt.StepMsg{Err: fmt.Errorf("write: %w", err)})
@@ -73,20 +84,25 @@ func runSteps(p *tea.Program, cfg *config.ProjectConfig) error {
 	p.Send(prompt.StepMsg{Label: Steps[3]})
 
 	// opening selected ide (non-fatal)
+
 	_, _ = OpenIDE(cfg.OutputDir, cfg.IDE)
 	p.Send(prompt.StepMsg{Label: Steps[4]})
 
 	p.Send(prompt.DoneMsg{})
-	printSuccess(cfg)
+
 	return nil
 }
 
 func printSuccess(cfg *config.ProjectConfig) {
 	fmt.Println()
-	fmt.Printf("  ✓ Project %q created at %s\n\n", cfg.ProjectName, cfg.OutputDir)
-	fmt.Println("  Next steps:")
-	fmt.Printf("    cd %s\n", cfg.OutputDir)
-	fmt.Println("    go mod tidy")
-	fmt.Println("    go run . --help")
+	fmt.Printf("✓ Project %q created at %s\n\n", cfg.ProjectName, cfg.OutputDir)
+	fmt.Println()
+	fmt.Printf(" 📁 Location:")
+	fmt.Printf(" %s\n", cfg.OutputDir)
+	fmt.Println()
+	fmt.Println("Next steps:")
+	fmt.Printf("    cd  \"%s\"\n", cfg.OutputDir)
+	fmt.Println(" go mod tidy")
+	fmt.Println(" go run . --help")
 	fmt.Println()
 }

@@ -9,7 +9,7 @@ For Files - 0644 (owner can read and write to it, everyone else can only read)
 
 For Directories - 0755 (owner has full control(read, write, execute) and everyone else can just read and "enter", but not change the content of it)
 
-(0755, 0644) the leading zero is optional and it indicates the octal number system and it is ignored
+(0755, 0644) the leading zero is optional and it indicates the octal number system and it can be ignored
 */
 
 package scaffold
