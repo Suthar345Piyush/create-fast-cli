@@ -63,6 +63,12 @@ func Render(cfg *config.ProjectConfig) ([]RenderedFile, error) {
 
 	}
 
+	fmt.Printf("Total rendered files: %d\n", len(files))
+
+	for _, f := range files {
+		fmt.Println("->", f.RelPath)
+	}
+
 	return files, nil
 
 }
@@ -74,6 +80,8 @@ func renderFS(fsys fs.FS, cfg *config.ProjectConfig) ([]RenderedFile, error) {
 	var results []RenderedFile
 
 	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, walkErr error) error {
+
+		fmt.Println("Found:", path)
 
 		if walkErr != nil {
 			if path == "." {

@@ -240,7 +240,7 @@ func validateProjectName(s string) error {
 }
 
 func isNameChar(ch rune) bool {
-	return (ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9' || ch == '-' && ch == '_')
+	return (ch >= 'a' && ch <= 'z' || ch >= '0' && ch <= '9')
 }
 
 // tests validation for module path
