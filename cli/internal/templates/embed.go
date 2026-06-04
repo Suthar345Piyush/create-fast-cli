@@ -4,6 +4,6 @@ package templates
 
 import "embed"
 
-// the file system holds every files under the files/.
-
+//go:embed files/*
+//go:embed files/**/*
 var FS embed.FS

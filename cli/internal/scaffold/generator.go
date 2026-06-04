@@ -83,7 +83,7 @@ func runSteps(p *tea.Program, cfg *config.ProjectConfig) error {
 	_ = config.SavePreferences(cfg)
 	p.Send(prompt.StepMsg{Label: Steps[3]})
 
-	// opening selected ide (non-fatal)
+	// opening selected ide
 
 	_, _ = OpenIDE(cfg.OutputDir, cfg.IDE)
 	p.Send(prompt.StepMsg{Label: Steps[4]})
@@ -101,7 +101,8 @@ func printSuccess(cfg *config.ProjectConfig) {
 	fmt.Printf(" %s\n", cfg.OutputDir)
 	fmt.Println()
 	fmt.Println("Next steps:")
-	fmt.Printf("    cd  \"%s\"\n", cfg.OutputDir)
+	fmt.Println()
+	fmt.Printf(" cd  \"%s\"\n", cfg.OutputDir)
 	fmt.Println(" go mod tidy")
 	fmt.Println(" go run . --help")
 	fmt.Println()
