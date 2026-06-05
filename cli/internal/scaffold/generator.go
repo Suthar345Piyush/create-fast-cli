@@ -34,6 +34,11 @@ func Generate(cfg *config.ProjectConfig) error {
 		return err
 	}
 
+	_, err := OpenIDE(cfg.OutputDir, cfg.IDE)
+	if err != nil {
+		fmt.Println("warning:", err)
+	}
+
 	printSuccess(cfg)
 
 	return nil
@@ -85,7 +90,7 @@ func runSteps(p *tea.Program, cfg *config.ProjectConfig) error {
 
 	// opening selected ide
 
-	opened, err := OpenIDE(cfg.OutputDir, cfg.IDE)
+	// opened, err := OpenIDE(cfg.OutputDir, cfg.IDE)
 
 	if err != nil {
 		p.Send(prompt.StepMsg{
@@ -94,9 +99,9 @@ func runSteps(p *tea.Program, cfg *config.ProjectConfig) error {
 		return err
 	}
 
-	if opened {
-		p.Send(prompt.StepMsg{Label: Steps[4]})
-	}
+	// if opened {
+	// 	p.Send(prompt.StepMsg{Label: Steps[4]})
+	// }
 
 	p.Send(prompt.DoneMsg{})
 
