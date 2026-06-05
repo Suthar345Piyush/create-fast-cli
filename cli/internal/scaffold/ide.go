@@ -43,13 +43,12 @@ func OpenIDE(projectDir string, ide config.IDE) (opened bool, err error) {
 		return false, fmt.Errorf("%s not found in PATH", bin)
 	}
 
-	cmd := exec.Command(binPath, projectDir)
+	cmd := exec.Command(binPath)
 	cmd.Stdout = nil
 	cmd.Stderr = nil
 
-	if err := cmd.Start(); err != nil {
-		return false, fmt.Errorf("open %s: %w", config.IDELabel(ide), err)
-	}
+	err = cmd.Start()
+	fmt.Printf("START ERR=%v\n", err)
 
 	_ = cmd.Process.Release()
 
