@@ -1,0 +1,77 @@
+{{- if hasFeature . "UseConfig"}}
+package config  
+
+
+import (
+  "fmt"
+  "os"
+  "path/filepath"
+  "github.com/spf13/viper"
+)
+
+
+
+// c is global config variable, used by Init() function 
+
+var C config 
+
+// Config holds all the runtime configuration for {{title .ProjectName}}
+
+type Config struct {
+  LogLevel string `mapstructure:"log_level"`
+  Output string `mapstructure:"output"`
+ }
+
+
+// Init reads configuration from the file at cfgFile , env prefixed with {{.ProjectName | slug | title}} and populates the C variable  
+
+func Init(cfgFile string) {
+
+    if cfgFile != "" {
+       viper.SetConfigFile(cfgFile)
+     } else {
+        
+         home, err := os.UserHomeDir()
+
+         if err != nil {
+            fmt.Fprintln(os.Stderr, "warning: could not find home directory:", err)
+            return 
+         }
+
+         viper.SetConfigName(".{{.ProjectName}}")
+         viper.SetConfigType("yaml")
+         viper.AddConfigPath(home)
+         viper.AddConfigPath(filepath.Join(home, ".config", "{{.ProjectName}}"))
+         viper.AddConfigPath(".")
+      }
+
+      viper.SetEnvPrefix("{{.ProjectName}}")
+      viper.AutomaticEnv()
+
+      //defaults 
+      viper.SetDefault("log_level", "info")
+      viper.SetDefault("output", "")
+
+
+      if err := viper.ReadInConfig(); err != nil {
+        if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+          fmt.Fprintln(os.Stderr, "warning: could not read config:", err)
+         }
+      }  
+
+
+      if err := viper.Unmarshal(&C); err != nil {
+         fmt.Fprintln(os.Stderr, "warning: could not parse config:", err)
+      }
+}
+
+
+
+{{- else }}
+
+// Package config is a stub - config support was not selected at the project creation.
+
+package config
+{{- end}}
+
+

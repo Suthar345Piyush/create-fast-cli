@@ -1,0 +1,116 @@
+{{- if hasFeature . "UseLogging"}}
+package logger 
+
+
+import (
+  "os"
+
+  "go.uber.org/zap"
+  "go.uber.org/zap/zapcore"
+)
+
+
+
+var global *zap.SugaredLogger 
+
+
+// Init function will initialize the global logger and the info level 
+
+func Init(verbose bool) error {
+
+
+   level := zapcore.InfoLevel
+
+   if verbose {
+      level = zapcore.DebugLevel 
+   }
+
+
+   // encoder config 
+
+   enc := zap.NewDevelopmentEncoderConfig()
+
+   // remove the timestamps
+   
+   enc.TimeKey = ""
+   enc.EncodeLevel = zapcore.CapitalColorLevelEncoder
+
+   core := zapcore.NewCore(
+       zapcore.NewConsoleEncoder(enc),
+       zapcore.AddSync(os.Stderr),
+       level,
+   )
+
+   global = zap.New(core).Sugar()
+   return nil
+}
+
+
+func must() *zap.SugaredLogger {
+   if global == nil {
+     panic("logger.Init() has not been called")
+   }
+   return global
+}
+
+
+// Debug, warn, error, Info helper functions 
+
+func Debug(args ...any) {
+   must().Debug(args...)
+}
+
+
+func Debugf(f string, args ...any) {
+   must().Debugf(f, args...) 
+}
+
+
+
+func Warn(args ...any) {
+   must().Warn(args...)
+}
+
+func Warnf(f string, args ...any) {
+   must().Warnf(f, args...)
+}
+
+
+func Info(args ...any) { 
+   must().Info(args...)
+}
+
+
+func Infof(f string, args ...any) {
+   must().Infof(f, args...)
+}
+
+
+func Error(args ...any) {
+   must().Error(args...)
+}
+
+func Errorf(f string, args ...any) {
+   must().Errorf(f, args...)
+}
+
+func Fatal(args ...any) {
+   must().Fatal(args...)
+}
+
+func Fatalf(f string, args ...any) {
+   must().Fatalf(f, args...)
+}
+
+func Sync() {
+  _ = must().Sync()
+}
+
+{{- else}}
+
+// if logging package is not chosen, at project starting 
+
+package logger 
+
+{{- end}}
+
