@@ -5,5 +5,4 @@ package templates
 import "embed"
 
 //go:embed files
-//go:embed *.tmpl
 var FS embed.FS
