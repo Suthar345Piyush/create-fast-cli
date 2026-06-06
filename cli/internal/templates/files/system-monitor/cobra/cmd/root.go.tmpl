@@ -1,0 +1,94 @@
+// root file - entry point for CLI applications - convention from cobra CLI framework 
+
+package cmd  
+
+import (
+
+   "fmt"
+   "os"
+{{- if hasFeature . "UseLogging"}}
+   "{{.ModulePath}}/internal/logger"
+{{- end}}
+
+{{- if hasFeature . "UseConfig"}}
+   "{{.ModulePath}}/internal/config"
+{{- end}}
+
+    "github.com/spf13/cobra"
+
+)
+
+
+var (
+     verbose bool
+{{- if hasFeature . "UseConfig"}}
+     cfgFile string
+{{- end}}
+)
+
+
+
+// rootCmd is the entry point for the CLI 
+
+
+var rootCmd = &cobra.Command{
+      Use: "{{.ProjectName}}",
+      Short: "A CLI application to monitor your system built with FastCLI",
+      Long: `{{title .ProjectName}} is a system moniter tool scaffolded with create-fast-cli.
+      
+      Add your tool description here.`,
+
+          PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+{{- if hasFeature . "UseLogging"}}
+            
+            if err := logger.Init(verbose); err != nil {
+               return fmt.Errorf("init logger: %w", err)
+             }
+
+{{- end}}
+{{- if hasFeature . "UseConfig"}}
+       config.Init(cfgFile)
+{{- end}}
+       return nil
+        },
+ }
+
+
+ // execute function will be called by main.go file - it is single entry point into the CLI 
+
+func Execute() {
+     if err := rootCmd.Execute(); err != nil {
+          fmt.Fprintln(os.Stderr, err)
+          os.Exit(1)
+      } 
+  }
+
+
+
+  // init functtion 
+
+func init() {
+    roomCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Enable verbose (debug) output")
+
+{{- if hasFeature . "UseConfig"}}
+    rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default: ~/.{{.ProjectName}}.yaml)")
+{{- end}}
+
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   

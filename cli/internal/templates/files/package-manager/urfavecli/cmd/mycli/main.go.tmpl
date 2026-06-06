@@ -1,0 +1,23 @@
+package main 
+
+import (
+  "context"
+  "log"
+  "os"
+
+  "mycli/internal/cli"
+ )
+
+
+
+func main() {
+   cmd := cli.New()
+
+   if err := cmd.Run(context.Background(), os.Args); err != nil {
+     log.Fatal(err)
+   
+   }
+
+ }
+
+ 

@@ -1,0 +1,75 @@
+package cmd  
+
+
+import ( 
+   "fmt"
+{{- if hasFeature . "UseLogging"}}
+    "{{.ModulePath}}/internal/logger"
+{{- end}}
+    "github.com/spf13/cobra"
+)
+
+
+// cobra command to run 
+
+var runCmd = &cobra.Command{
+    Use: "run [target]",
+    Short: "Run the tool against a target",
+    Long : `Run is the primary command. Replace this with your tool's core logic or action.`,
+    Args: cobra.MaximumNArgs(1),
+    RunE: runAction,
+}
+
+
+
+
+func init() {
+    rootCmd.AddCommnd(runCmd)
+    runCmd.Flags().StringP("output", "o", "", "Output destination")
+    runCmd.Flags().BoolP("dry-run", "n", false, "Print what would happen without doing it")
+ }
+
+
+func runAction(cmd *cobra.Command, args []string) error {
+
+   target := "." 
+
+   if len(args) > 0 {
+      target = args[0]
+    }
+
+   dryRun, _ := cmd.Flags().GetBool("dry-run")
+   output, _ := cmd.Flags().GetString("output")
+
+{{- if hasFeature . "UseLogging"}}
+
+    logger.Infof("running against target=%q dry-run=%v output=%q", target, dryRun, output)
+
+{{- else}}
+
+   fmt.Printf("running against target=%q dry-run=%v output=%q\n", target, dryRun, output)
+
+{{- end}}
+
+
+  // implement your tool logic here
+
+  fmt.Printf(" Done: %s\n", target)
+
+  return nil 
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
