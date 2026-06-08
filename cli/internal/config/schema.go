@@ -10,8 +10,8 @@ const (
 	AppTypeGitClient      AppType = "git-client"
 	AppTypeFileExplorer   AppType = "file-explorer"
 	AppTypeK8sTool        AppType = "k8s-tool"
-	AppTypeAiAssistant    AppType = "ai-assitant"
-	AppTypeSystemMonitor  AppType = "system-moniter"
+	AppTypeAiAssistant    AppType = "ai-assistant"
+	AppTypeSystemMonitor  AppType = "system-monitor"
 	AppTypePackageManager AppType = "package-manager"
 )
 
@@ -21,7 +21,7 @@ type Framework string
 
 const (
 	FrameworkCobra     Framework = "cobra"
-	FrameworkUrfaveCli Framework = "urfave"
+	FrameworkUrfaveCli Framework = "urfavecli"
 )
 
 // ide options  (vscodem, cursor)
