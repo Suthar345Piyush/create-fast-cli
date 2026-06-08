@@ -33,7 +33,7 @@ func runCreate(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	// scaffold pipeline(render -> write -> ide open) with the tui
+	// scaffold pipeline(render -> write -> ide open) with the TUI
 
 	if err := scaffold.Generate(cfg); err != nil {
 		fmt.Fprintln(os.Stderr, "\nScaffold failed:", err)
