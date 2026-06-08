@@ -5,3 +5,7 @@ dist/
 # env files 
 
 .env
+
+# test coverage file  
+
+coverage
