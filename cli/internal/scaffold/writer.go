@@ -24,11 +24,11 @@ func Write(rootDir string, files []RenderedFile) error {
 
 	// fmt.Printf("passing %d files to written\n", len(ren))
 
-	fmt.Printf("writing %d files\n", len(files))
+	// fmt.Printf("writing %d files\n", len(files))
 
 	for _, f := range files {
 
-		fmt.Printf("File: %s\n", f.RelPath)
+		// fmt.Printf("File: %s\n", f.RelPath)
 
 		dest := filepath.Join(rootDir, f.RelPath)
 
