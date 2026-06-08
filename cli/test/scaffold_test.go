@@ -269,7 +269,7 @@ func TestRender_TestingEnabled(t *testing.T) {
 	idx := buildIndex(files)
 
 	goMod := idx["go.mod"]
-	assert.Contains(t, goMod, "github.com/strechr/testify", "go.mod should declare testify testing with UseTesting=true")
+	assert.Contains(t, goMod, "github.com/strechr/testify v1.11.1", "go.mod should declare testify testing with UseTesting=true")
 
 }
 
@@ -287,7 +287,7 @@ func TestRender_TestingDisabled(t *testing.T) {
 	idx := buildIndex(files)
 
 	goMod := idx["go.mod"]
-	assert.NotContains(t, goMod, "github.com/strechr/testify", "go.mod should declare testify testing with UseTesting=false")
+	assert.NotContains(t, goMod, "github.com/strechr/testify v1.11.1", "go.mod should declare testify testing with UseTesting=false")
 
 }
 

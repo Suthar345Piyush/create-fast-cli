@@ -31,7 +31,7 @@ func Run() (*config.ProjectConfig, error) {
 
 	// create-fast-cli banner
 
-	printBanner()
+	printGoodBanner()
 
 	form := huh.NewForm(
 		GroupIdentity(&cfg),
@@ -91,13 +91,6 @@ func Run() (*config.ProjectConfig, error) {
 }
 
 // print banner function
-
-func printBanner() {
-	fmt.Println()
-	fmt.Println(AppTitleStyle.Render("⚡ create-fast-cli"))
-	fmt.Println(SubtitleStyle.Render(" A CLI ecosystem starter for Go based CLI applications - answer few questions to scaffold your CLI project."))
-	fmt.Println()
-}
 
 func printSummary(cfg *config.ProjectConfig) {
 
