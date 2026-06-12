@@ -6,7 +6,11 @@
 go run github.com/Suthar345Piyush/create-fast-cli/cli@latest
 ```
 ## Demo
-https://github.com/user-attachments/assets/2700e53f-c54c-47e5-9f3c-15b1b4a3b25e
+
+
+https://github.com/user-attachments/assets/7745ad1c-0f35-4ce2-99ab-bb6021e99102
+
+
 ---
 
 ## Table of Contents
