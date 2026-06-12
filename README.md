@@ -5,6 +5,9 @@
 ```bash
 go run github.com/Suthar345Piyush/create-fast-cli/cli@latest
 ```
+## Demo
+
+https://github.com/user-attachments/assets/e9d8ba6a-e0e9-40c1-9b73-8d1f4c3d2cf1
 
 ---
 
